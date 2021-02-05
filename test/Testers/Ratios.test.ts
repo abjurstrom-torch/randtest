@@ -1,4 +1,4 @@
-import Ratios from "../src/Testers/Ratios";
+import Ratios from "../../src/Testers/Ratios";
 
 test("Ratios test, on an array of full ints, returns sum bits as skew", () => {
   const objectUnderTest = new Ratios();
