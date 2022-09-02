@@ -10,6 +10,16 @@ export const OneToOneHundred: number[] = (() => {
   return output;
 })();
 
+export const OneToOneHundredRunLengths = {
+  "1": 206,
+  "2": 97,
+  "3": 48,
+  "4": 25,
+  "5": 13,
+  "6": 7,
+  "7": 7,
+};
+
 export const RandomSample: number[] = (() => {
   const output: number[] = [];
   const randomGenerator = seedrandom("RandomSample Seed");

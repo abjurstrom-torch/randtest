@@ -12,5 +12,8 @@
     "typescript.referencesCodeLens.enabled": true,
     "typescript.suggest.enabled": true,
     "typescript.suggest.autoImports": true,
-    "typescript.implementationsCodeLens.enabled": true
+    "typescript.implementationsCodeLens.enabled": true,
+    "cSpell.words": [
+        "seedrandom"
+    ]
 }

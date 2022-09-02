@@ -1,7 +1,7 @@
 import BitTools from "../BitTools";
 
 export default class Ratios {
-  public test(testCase: ArrayBuffer): number {
+  public findRatios(testCase: ArrayBuffer): number {
     const uint = new Uint8Array(testCase);
     let skew = 0;
     uint.forEach((value) => {

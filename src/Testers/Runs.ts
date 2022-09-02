@@ -1,11 +1,23 @@
 import _ from "lodash";
 import BitTools from "../BitTools";
-export type RunLengths = { [key: string]: number };
+export type MappedNumbers = { [key: string]: number };
 
 export default class Runs {
-  public gatherData(testCase: ArrayBuffer): RunLengths {
+  private readonly minimumDiffToReport: number;
+
+  public constructor() {
+    this.minimumDiffToReport = 0.001;
+  }
+  
+  /**
+   * Counts the number of a bit that is the same are reports on the frequency of that run length.
+   * Combines runs of 0s and 1s as long as they are the same length, thus, 0b00110011 would return {"2": 4}.
+   * 
+   * @param testCase The arrayBuffer to act on, should be an array of bits to check for runs on.
+   */
+  public findRunLengths(testCase: ArrayBuffer): MappedNumbers {
     const uint = new Uint8Array(testCase);
-    let runLengthResults: RunLengths = {};
+    let runLengthResults: MappedNumbers = {};
     let bitRunning: number | null = null;
     let runCounter = 0;
 
@@ -32,16 +44,16 @@ export default class Runs {
 
   /**
    * Creates an array of ratios for a given data set that can be used to find how far off an output of runs is from the idealized
-   * distrobution.  The "first" run length is used as equal to 1.
+   * distribution.  The "first" run length is used as equal to 1.
    * 
    * @param input An array of data to calculate ratios for.
    */
-  public testData(input: RunLengths): RunLengths {
+  public lengthsToRatios(input: MappedNumbers): MappedNumbers {
     if (_.isEmpty(input)) {
       return {};
     }
     
-    const output: RunLengths = {};
+    const output: MappedNumbers = {};
     const root = _.first(_.toArray(input));
     _.forEach(input, (value, key) => {
       if (value === root) {
@@ -76,7 +88,29 @@ export default class Runs {
     return expectedFormula.base * Math.exp(power);
   }
 
-  private writeResult(resultsArray: RunLengths, runLength: number): RunLengths {
+  public scoreRatios(inputRatios: MappedNumbers): MappedNumbers {
+    const output: MappedNumbers = {};
+
+    _.forEach(inputRatios, (ratio, key) => {
+      const score = Math.abs(this.expectedFrequency(Number.parseInt(key, 10))-ratio);
+      if (score < this.minimumDiffToReport) {
+        output[key] = 0;
+      } else {
+        output[key] = score;
+      }
+    });
+    
+    return output;
+  }
+
+  /**
+   * Increments the correct length by the passed in run length and returns the resulting array.
+   * 
+   * @param resultsArray Array of all results
+   * @param runLength the length of the current run to add to the results array
+   * @returns the updated array of all results
+   */
+  private writeResult(resultsArray: MappedNumbers, runLength: number): MappedNumbers {
     if (runLength === 0) {
       return resultsArray;
     }
@@ -90,3 +124,4 @@ export default class Runs {
     return resultsArray;
   }
 }
+
